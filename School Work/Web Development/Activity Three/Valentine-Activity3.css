@@ -1,0 +1,75 @@
+/*ITIS 3135 Activity 3 css file*/
+
+/*styling for the whole page goes here*/
+body {
+	font-size: 16px;
+    background-color: #eeeeee;
+	color: #680000;
+}
+
+/*styling for the page title*/
+h1 {
+	font-style: italic;
+	font-size: 28px;
+    text-align: center;
+    background-color: #996600;
+	color: #f8f8f8;
+}
+
+/*styling for the overall table*/
+table {
+    background-color: #F8F8F8;
+	border: solid 2px #787878;
+}
+
+/*styling for the title of the table*/
+th {
+    font-weight: bold;
+    text-align: left;
+}
+
+form table{
+	border-color: red;
+}
+
+.formHeader{
+	font-size: 14px;
+	background-color: darkblue;
+	color: lightblue;
+	text-align: right;
+}
+
+.formInput{
+	font-size: 14px;
+	background-color: darkblue;
+	color: lightblue;
+	text-align: left;
+}
+
+/*styling for the coffee types*/
+.label {
+    font-weight: bold;
+}
+
+/*styling for the tables*/
+.altrow {
+	background-color: #E0E0E0;
+}
+
+#formsubmit {
+	background-color: darkblue;
+	color: cornflowerblue;
+}
+
+/*styling for the Google Map link*/
+#locationlink {
+	color: #380000;
+	font-style:italic;
+}
+
+/*styling for the bottom copyright information*/
+footer {
+    font-style: italic;
+	font-size: 12px;
+	text-align: center;
+}

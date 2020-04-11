@@ -1,0 +1,258 @@
+/* Sets the background color for the pages. */
+body {
+    margin: 0;
+    background-color: #767e85; 
+}
+
+/* Footer formatting for all pages. */
+footer{
+    margin-top: 50px;
+    margin-bottom: 20px;
+    font-style: italic;
+	font-size: 12px;
+    text-align: center;
+    color: white;
+}
+
+/* Header formatting for all pages. */
+header{
+    margin-top: 0px;
+    padding-top: 20px;
+    text-align: center;
+    color: white;
+}
+
+/* Styling for the navigation bar on the left side of the website. */
+div.navBar ul {
+    list-style-type: none;
+    margin: 0;
+    padding: 0;
+    width: 10%;
+    background-color: #b7bfc7;
+    position: fixed;
+    height: 100%;
+    overflow: auto;
+}
+
+div.navBar li a {
+    display: block;
+    color: #000;
+    padding: 8px 16px;
+    text-decoration: none;
+    text-align: center;
+    font-size: 18px;
+}
+
+div.navBar li a.active {
+    background-color: #3e89c7;
+    color: white;
+}
+
+div.navBar li a:hover:not(.active) {
+    background-color: #767e85;
+    color: white;
+}
+
+/* Styles and positions the header for each page. */
+.title{
+    margin-left: 35%;
+    margin-right: 25%;
+    padding-top: 2px;
+    padding-bottom: 2px;
+    background-color: #3e89c7; 
+}
+
+/* Sets up standard formatting for each box */
+.box{
+    position: relative;
+    text-align: center;
+    width: 90%;
+    margin-left: 10%;
+}
+
+/* Sets up standard formatting for text */
+.text{
+    position: absolute;
+    text-align: center;
+    z-index: 999;
+    width: 30%;
+    height: 20%;
+    color: white;
+}
+
+/* Sets up standard formatting for text in tables. */
+.tableText{
+    color: white;
+    text-align: center;
+    height: auto;
+    width: 50%;
+}
+
+/* Provides formatting for each text box on the website */
+.picBrandonText{
+    background-color: #3e89c7DF;
+    padding: 10px;
+    box-shadow: 0px 0px 6px 0px black;
+    vertical-align: text-top;
+    font-size: 20px;
+}
+
+#backgroundColor{
+    right: 5%;
+    left: 5%;
+    padding-bottom: 20px;
+}
+
+/* Positioning the div for each paragraph in index.html */
+#containerTextOne{
+    margin-top: 40px;
+    margin-left: 10%;
+    top: 0%;
+}
+
+#containerTextTwo{
+    margin-right: 10%;
+    top: 40%;
+    right: 0%;
+}
+
+#containerTextThree{
+    margin-bottom: 20px;
+    margin-left: 10%;
+    bottom: 0%;
+}
+
+/* Positioning the pdf on the center of the page in Resume.html */
+#resume{
+    width: 80%;
+    height: 1200px;
+    margin-left: 15%;
+    padding-top: 20px;
+}
+
+/* Text positioning for the about table in AboutMe.html */
+#aboutTextOne{
+    margin-left: 45%;
+}
+#aboutTextTwo{
+    margin-left: -5%;
+}
+#aboutTextThree{
+    margin-left: 45%;
+}
+
+/* Text positioning for the extra activies table in ExtraCurriculars.html */
+#extraTextOne{
+    margin-left: 40%;
+}
+#extraTextTwo{
+    margin-left: 0%;
+}
+#extraTextThree{
+    margin-left: 40%;
+}
+
+/* Image positioning for the about table in AboutMe.html */
+#aboutImageOne{
+    margin-left: -10%;
+    vertical-align: middle;
+    padding-top: 20px;
+    width: 40%;
+    height: auto;
+}
+#aboutImageTwo{
+    vertical-align: middle;
+    padding-top: 20px;
+    width: 40%;
+    height: auto;
+}
+#aboutImageThree{
+    margin-left: -10%;
+    vertical-align: middle;
+    padding-top: 20px;
+    width: 40%;
+    height: auto;
+}
+
+/* Image positioning for the image in index.html */
+#picBrandon{
+    vertical-align: middle;
+    padding-top: 20px;
+    width: 40%;
+    height: auto;
+}
+
+/* Everything below is provided by rslides at http://responsiveslides.com/ */
+.rslides {
+  position: relative;
+  list-style: none;
+  overflow: hidden;
+  width: 100%;
+  padding: 0;
+  margin: 0;
+  }
+
+.rslides li {
+  -webkit-backface-visibility: hidden;
+  position: absolute;
+  display: none;
+  width: 100%;
+  left: 0;
+  top: 0;
+  }
+
+.rslides li:first-child {
+  position: relative;
+  display: block;
+  float: left;
+  }
+
+.centered-btns_nav:focus,
+.transparent-btns_nav:focus,
+.large-btns_nav:focus {
+  outline: none;
+  }
+
+.rslides_tabs,
+.transparent-btns_tabs,
+.large-btns_tabs {
+  margin-top: 10px;
+  text-align: center;
+  }
+
+.rslides_tabs li,
+.transparent-btns_tabs li,
+.large-btns_tabs li {
+  display: inline;
+  float: none;
+  _float: left;
+  *float: left;
+  margin-right: 5px;
+  }
+
+.rslides_tabs a,
+.transparent-btns_tabs a,
+.large-btns_tabs a {
+  text-indent: -9999px;
+  overflow: hidden;
+  -webkit-border-radius: 15px;
+  -moz-border-radius: 15px;
+  border-radius: 15px;
+  background: #ccc;
+  background: rgba(0,0,0, .2);
+  display: inline-block;
+  _display: block;
+  *display: block;
+  -webkit-box-shadow: inset 0 0 2px 0 rgba(0,0,0,.3);
+  -moz-box-shadow: inset 0 0 2px 0 rgba(0,0,0,.3);
+  box-shadow: inset 0 0 2px 0 rgba(0,0,0,.3);
+  width: 9px;
+  height: 9px;
+  }
+
+.rslides_here a,
+.transparent-btns_here a,
+.large-btns_here a {
+  background: #222;
+  background: rgba(0,0,0, .8);
+  }

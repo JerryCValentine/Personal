@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <title>Update Expenditure</title>
+    <link rel="stylesheet" href="Valentine-Midterm.css">
+    <script src="Valentine-Midterm.js"></script>
+</head>
+
+<body>
+<main>
+    <h1>Update Expenditure</h1>
+    <!--add the form-->
+    <h2>Enter you details</h2>
+    <form id="expenditureForm" name="expenditureForm" action="#">
+        <table>
+            <tr>
+                <td class="formHeader"><label for="Name"><strong>Name</strong></label></td>
+            </tr>
+            <tr>
+                <td class="formInput"><input type="text" name="last" id="Name" size="15" placeholder="Enter your name" required /></td>
+            </tr>
+            <tr>
+                <td class="formHeader"><label for="email"><strong>Email</strong></label></td>
+            </tr>
+            <tr>
+                <td class="formInput"><input type="email" name="email" id="email" size="20" placeholder="Enter your email" required/></td>
+            </tr>
+            <tr>
+                <td class="formInput"><input type="submit" name="submit" class="button" id="button1"/></td>
+            </tr>
+        </table>
+    </form>
+    
+    <label for="day" class="notBold" id="dayHeader">Choose a day:</label>
+
+    <select id="day">
+        <option value="Monday">Monday</option>
+        <option value="Tuesday">Tuesday</option>
+        <option value="Wednesday">Wednesday</option>
+        <option value="Thursday">Thursday</option>
+        <option value="Friday">Friday</option>
+        <option value="Saturday">Saturday</option>
+        <option value="Sunday">Sunday</option>
+    </select>
+
+
+    <label for="expenditure" class="notBold" id="expenditureHeader">Enter the expenditure:</label>
+
+    <input type="number" id="expenditure"/>
+
+    <div id="container">
+        <button type="button" class="button" id="update" >Update</button>
+        <button type="button" class="button" id="total">Total Expenditure</button>
+    </div>
+
+    <label for="totalExpenditure" class="notBold">Total Expenditure is</label>
+
+    <input type="number" id="totalExpenditure"/>
+
+
+    <!--header for showing maximum exp. amount and day-->
+    <strong id="show_max">Show Maximum Expenditure Day and Amount:</strong>
+    <!--div for showing maximum exp. amount and day-->
+    <div class="notBold" id="showMax"></div>
+
+</main>
+<footer>
+    <br/>
+    <a href="https://validator.w3.org/">Validate HTML</a>
+    <br/>
+    <a href="https://jigsaw.w3.org/css-validator/">Validate CSS</a>
+</footer>
+</body>
+</html>

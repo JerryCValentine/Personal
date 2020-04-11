@@ -1,0 +1,98 @@
+<!doctype html>
+<html lang="en">
+
+<head>
+  <!-- Required meta tags -->
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+  <meta name="Description" content="Testing website for accessibility.">
+
+  <!-- css -->
+  <link rel="stylesheet" href="Valentine-Activity_Accessibility.css">
+  <title>Test For Accessibility</title>
+
+</head>
+
+<body>
+  <header>
+    <h1>Time to Twinkle</h1>
+  </header>
+  <main>
+
+    <table class="center">
+      <caption>Candles</caption>
+      <thead>
+        <tr>
+          <!-- identify table headers <th> with scope attribute -->
+          <th scope="col">TYPE</th>
+          <th scope="col">PRODUCT</th>
+          <th scope="col">FEATURES</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <th scope="row">Birthday Candles</th>
+          <td><img class="resize" src="images/Birthday-Candles.jpg"></td>
+          <td>
+            <ol>
+              <li>Comes in a range of fun, vibrant colors</li>
+              <li>Small and slender forms allow you to add as many or as few of them to dessert as you desire</li>
+              <li>Offers a way to personalize customers' desserts on birhtdays and anniversaries</li>
+            </ol>
+          </td>   
+        </td>
+        </tr>
+        <tr>
+            <th scope="row">Votives</th>
+            <td><img class="resize" src="images/voltives.jpeg"></td>
+            <td>
+              <ol>
+                <li>Inexpensive and easy to use</li>
+                <li>Bigger than tea lights to provide longer burn times, making them better for longer events</li>
+              </ol>
+            </td>
+        </tr>
+        <tr>
+            <th scope="row">Taper Candles</th>
+            <td><img class="resize" src="images/taper-candles.jpg"></td>
+            <td>
+              <ol>
+                <li>Commonly known as window candles</li>
+                <li>Long, slender constuctions add dimension to table tops</li>
+              </ol>
+            </td>
+          </tr>
+      </tbody>
+    </table>
+    <!--Add the form here-->
+    <h2>Enter Your Details To Win a Gift Box!</h2>
+    <form>
+      <table>
+        <tr>
+          <td class="formHeader"><label for="name">Name:</label></td>
+          <td class="formInput" colspan="2"><input type="text" name="name" id="name" size="10" placeholder="name" required /></td>
+        </tr>
+        <tr>
+          <td class="formHeader"><label for="email">Email:</label></td>
+          <td class="formInput" colspan="2"><input type="text" name="email" id="email" size="15" placeholder="email" required /></td>
+        </tr>
+        <tr>
+          <td class="formHeader">Sign up:</td>
+          <td class="formInput" colspan="2"><input type="submit" name="submit" id="formsubmit"/></td>
+        </tr>
+      </table>
+    </form>
+   
+    <div class="whitespace"></div>
+    <a href="https://teachaccess.github.io/tutorial/#/12">Click here to find more about accessibility</a>
+    <div class="whitespace"></div>
+
+    <a href="https://dequeuniversity.com/rules/axe/3.2/color-contrast"> Find out if your font
+      color and background color passes WCAG standard!</a>
+  </main>
+
+  <footer>
+
+  </footer>
+</body>
+</html>
