@@ -1,8 +1,9 @@
 import io
 import math
 from PIL import Image, ImageFilter
+import glob
 import numpy as np
-import copy
+from copy import deepcopy as copy
 
 scunchDict = {
     -255: 0, 
@@ -518,6 +519,13 @@ scunchDict = {
     255: 255,
     }
 
+class KeyPoint():
+    def __init__(self, _location=(-1,-1), _scale=-1, _orientation=-1, _descriptor=[]):
+        self.location = _location
+        self.scale = _scale
+        self.orientation = _orientation
+        self.descriptor = _descriptor
+
 def combineOriginalAndSobel(_originalImage, _sobelImage, _weightOne, _weightTwo): # Assumes they are the same size.
     xSize = _originalImage.size[0]
     ySize = _originalImage.size[1]
@@ -545,7 +553,7 @@ def combineSobelXY(_edgeMapOne, _edgeMapTwo): # Assumes they are the same size.
 
     return addedImage
 
-def convolve(_image, _kernel, _mode=True): # 0 - color, 1 - greyscale, 2 - sobel
+def convolve(_image, _kernel, _mode=0): # 0 - color, 1 - sobel, 2 - sobelIncludingNegitives, 3 greyscale
     posX = 0
     posY = 0
     
@@ -555,7 +563,7 @@ def convolve(_image, _kernel, _mode=True): # 0 - color, 1 - greyscale, 2 - sobel
     if(_mode is 0):
         newImage = Image.new('RGBA', (xSize, ySize), color = 'white')
         newPixelImage = newImage.load()
-    elif(_mode is 1):
+    elif(_mode is 1 or _mode is 3):
         newImage = Image.new('L', (xSize, ySize), color = 'white')
         newPixelImage = newImage.load()
     else:
@@ -584,7 +592,7 @@ def convolve(_image, _kernel, _mode=True): # 0 - color, 1 - greyscale, 2 - sobel
                         intensity += _kernel[x + int(len(_kernel)/2+.5)-1][y + int((len(_kernel[0])/2)+.5)-1] * pixelImage[posX + x, posY + y]
                     pixelAverageScale += abs(_kernel[x + int(len(_kernel)/2+.5)-1][y + int((len(_kernel[0])/2)+.5)-1])
                 else:
-                    if(_mode is 1 or _mode is 2):
+                    if(_mode is 0):
                         red += _kernel[x + int(len(_kernel)/2+.5)-1][y + int((len(_kernel[0])/2)+.5)-1] * 0
                         green += _kernel[x + int(len(_kernel)/2+.5)-1][y + int((len(_kernel[0])/2)+.5)-1] * 0
                         blue += _kernel[x + int(len(_kernel)/2+.5)-1][y + int((len(_kernel[0])/2)+.5)-1] * 0
@@ -596,6 +604,8 @@ def convolve(_image, _kernel, _mode=True): # 0 - color, 1 - greyscale, 2 - sobel
             newPixelImage[posX, posY] = (int(abs(red) / pixelAverageScale), int(abs(green) / pixelAverageScale), int(abs(blue) / pixelAverageScale))
         elif(_mode is 1):
             newPixelImage[posX, posY] = scunchDict[int(intensity / pixelAverageScale)]
+        elif(_mode is 3):
+            newPixelImage[posX, posY] = int(abs(intensity) / pixelAverageScale)
         else:
             newImage[posX][posY] = int(intensity / pixelAverageScale)
 
@@ -609,7 +619,7 @@ def convolve(_image, _kernel, _mode=True): # 0 - color, 1 - greyscale, 2 - sobel
         newImage.save(".\\School Work\\Computer Vision\\Processed Images\\ConvoledImage.png") # For testing only
     return newImage
 
-def getEdgeMap(_image):
+def getEdgeMapMagnitudes(_image):
     horizontalEdgeMapValues = getEdgeXMapValues(_image)
     verticalEdgeMapValues = getEdgeYMapValues(_image)
     edgemap = combineSobelXY(horizontalEdgeMapValues, verticalEdgeMapValues)
@@ -654,13 +664,12 @@ def getEdgeDirectionMap(_image):
             edgeDirectionMap[y].append(theta)
 
 def sharpen(_image):
-    sharpenedImage = combineOriginalAndSobel(_image, getEdgeMap(_image), 1, 1)
+    bluredImage = convolve(_image, gaussianKernelGenerator(5, 1), 0)
+    sharpenedImage = combineOriginalAndSobel(bluredImage, getEdgeMapMagnitudes(_image), 1, 1)
     sharpenedImage.save(".\\School Work\\Computer Vision\\Processed Images\\Sharpened.png")
     return sharpenedImage
 
 def gaussianEquation(_x, _y, _sigma):
-    # test = 1 / (2*np.pi*(_sigma**2)) * np.exp(-(_x**2 + _y**2)/(2* _sigma**2))
-    # print(test)
     return 1 / (2*np.pi*(_sigma**2)) * np.exp(-(_x**2 + _y**2)/(2* _sigma**2))
 
 def gaussianKernelGenerator(_size, _sigma):
@@ -675,29 +684,165 @@ def gaussianKernelGenerator(_size, _sigma):
              kernel[x,y] = round(kernel[x,y] * scaleFactor)
     return kernel
 
+def decreaseSize(_image, _factor):
+    smallImage = copy(_image)
+    smallImage.thumbnail((int(_image.size[0]/_factor),  int(_image.size[1]/_factor)))
+    return smallImage
+
+def generateImagesForScaleSpace(_image):
+    for scale in range(2, 16, 4):
+        for size in range(5, 18, 6):
+            kernel = gaussianKernelGenerator(size, 4)
+            image = decreaseSize(_image, scale)
+            image = image.convert('L')
+            image = convolve(image, kernel, 3)
+            image.save(".\\School Work\\Computer Vision\\Scaled-Blured Images\\image-" + str(scale) + "-" + str(size) + ".png" )
+
+    for size in range(5, 18, 6):
+        kernel = gaussianKernelGenerator(size, 4)
+        image = decreaseSize(_image, 1)
+        image = image.convert('L')
+        image = convolve(image, kernel, 3)
+        image.save(".\\School Work\\Computer Vision\\Scaled-Blured Images\\image-" + str(1) + "-" + str(size) + ".png" )
+
+def createDifferenceOfGaussian(_imageOne, _imageTwo):
+    xSize = _imageOne.size[0]
+    ySize = _imageOne.size[1]
+    newImage = Image.new('L', (xSize, ySize), color = 'white')
+    newImageFilter = newImage.load()
+    
+    for x in range(xSize):
+        for y in range(ySize):
+            newImageFilter[x, y] = _imageOne.getpixel((x,y)) - _imageTwo.getpixel((x,y)) 
+
+    return newImage
+
+def computeDoG(_images):
+    DoG = []
+    for i in range(len(_images)):
+        DoG.append([])
+        for j in range(len(_images[i])):
+            if(not len(_images[i]) == j + 1):
+                dogImage = createDifferenceOfGaussian(_images[i][j], _images[i][j+1])
+                dogImage.save(".\\School Work\\Computer Vision\\Scaled-Blured Images\\DoG\\DoG-" + str(i) + "-" + str(j) + ".png")
+                DoG[i].append(dogImage)
+    return DoG
+
+def paintKeyPoints(_image, _keyPoints):
+    pixelImage = _image.load()
+    for keyPoint in _keyPoints:
+        pixelImage[keyPoint.location[0],keyPoint.location[1]] = (0,255,0)
+    _image.save(".\\School Work\\Computer Vision\\Scaled-Blured Images\\test.png")
+
+def findLocalMaxs(_images):
+    listOfKeyPoints = []
+    xSize = _images[0].size[0]
+    ySize = _images[0].size[1]
+    localMax = (-1,-1)
+    isKeyPointAlready = False
+
+    for x in range(xSize):
+        for y in range(ySize):
+            for imageIndex in range(2):
+                for i in range(-1,2):
+                    for j in range(-1,2):
+                        if(x + i >= 0 and x + i < xSize and y + j >= 0 and y + j < ySize):
+                            if(localMax == (-1,-1)):
+                                localMax = ((x+i,y+j), _images[imageIndex].getpixel((x+i,y+j)))
+                            if(localMax[1] < _images[imageIndex].getpixel((x+i,y+j))):
+                                localMax = ((x+i,y+j), _images[imageIndex].getpixel((x+i,y+j)))
+            
+            if(localMax[1] > 15):
+                isKeyPoint = False
+                for keyPoint in listOfKeyPoints: # Searching if already keypoint or not
+                    if(keyPoint.location is localMax[0]):
+                        isKeyPointAlready = True
+                        break
+                if(not isKeyPointAlready):
+                    listOfKeyPoints.append(KeyPoint(localMax[0],1,0,localMax[1]))
+            localMax = (-1,-1)
+    paintKeyPoints(Image.open("School Work\\Computer Vision\\images\\room1.jpeg"), listOfKeyPoints)
+    return listOfKeyPoints
+
+def sift(_image):
+    ## Create scalespace
+    generateImagesForScaleSpace(_image)
+
+    ## Compute DoG
+    # Grab all of the images in the scalespace
+    images = []
+    stringHolder = []
+    previousNumber = -1
+    index = -1
+    for fileName in glob.iglob(".\\School Work\\Computer Vision\\Scaled-Blured Images\\image-*"):
+        stringHolder = fileName.split('-')
+        if(int(stringHolder[2]) is int(previousNumber)):
+            images[index].append(Image.open(fileName))
+        else:
+            images.append([])
+            index += 1
+            images[index].append(Image.open(fileName))
+            previousNumber = stringHolder[2]
+
+    dogImages = computeDoG(images)
+
+    ## Find local Maximums
+    
+    keyPoints = findLocalMaxs(dogImages)
+
+    ## Descript local Maximums
+
 def main():
     # image = Image.open("School Work\\Computer Vision\\images\\image0.jpg") # Car crash
-    image = Image.open("School Work\\Computer Vision\\images\\Valve_original_(1).png") # Valve
-    # image = Image.open("School Work\\Computer Vision\\images\\taj-rgb-noise.jpg")
+    # image = Image.open("School Work\\Computer Vision\\images\\Valve_original_(1).png") # Valve
+    image = Image.open("School Work\\Computer Vision\\images\\taj-rgb-noise.jpg")
     # image = Image.open("School Work\\Computer Vision\\images\\saltpepper.png")
     # image = Image.open("School Work\\Computer Vision\\images\\smallCross.png")
+    # roomOne = Image.open("School Work\\Computer Vision\\images\\room1.jpeg")
+    # roomTwo = Image.open("School Work\\Computer Vision\\images\\room2.jpeg")
     # image = Image.open(".\\School Work\\Computer Vision\\Processed Images\\Blured.png")
     
-    kernel = [
-        [-1, -2, -1],
-        [0, 0, 0],
-        [1, 2, 1]
-    ]
+    # kernel = [
+    #     [-1, -2, -1],
+    #     [0, 0, 0],
+    #     [1, 2, 1]
+    # ]
 
-    # kernel = gaussianKernelGenerator(7, 1)
+    # Ixs = getEdgeXMapValues(roomOne)
+    # Iys = getEdgeYMapValues(roomOne)
+    # keyPoints = findLocalMaxs([Image.open("School Work\\Computer Vision\\Scaled-Blured Images\\DoG\\DoG-3-0.png"),Image.open("School Work\\Computer Vision\\Scaled-Blured Images\\DoG\\DoG-3-1.png")])
+    # sizeOfWindow = 5
+    # xSize = roomOne.size[0]
+    # ySize = roomOne.size[1]
 
-    # image = convolve(image, kernel)
-    # image.save(".\\School Work\\Computer Vision\\Processed Images\\Blured.png")
+    # Ixx = 0
+    # Iyy = 0
+    # Ixy = 0
 
-    # getEdgeMap(image)
-    # getEdgeDirectionMap(image)
+    # rValues = []
 
-    # sharpen(image)
+    # for keyPoint in keyPoints:
+    #     location = keyPoint.location
+    #     for x in range(location[0]-sizeOfWindow, location[0]+sizeOfWindow+1):
+    #         for y in range(location[1]-sizeOfWindow, location[1]+sizeOfWindow+1):
+    #             if(x >= 0 and x < xSize and y >= 0 and y < ySize):
+    #                 Ixx += Ixs[x][y]**2
+    #                 Iyy += Iys[x][y]**2
+    #                 Ixy += Ixs[x][y] * Iys[x][y]
+    #     w, v = np.linalg.eig([[Ixx, Ixy],[Ixy, Iyy]])
+    #     rValues.append(w[0]*w[1] - .05 * ((w[0]+w[1])**2))
+
+    # paintKeyPoints(decreaseSize(roomOne, 2), listOfKeyPoints)
+
+    # print("test")
+
+    # kernel = gaussianKernelGenerator(5, 1)
+    # # image = image.convert('L')
+
+    # bluredImage = convolve(image, kernel, 0)
+    # bluredImage.save(".\\School Work\\Computer Vision\\Processed Images\\Blured.png")
+
+    sharpen(image)
 
 if __name__ == "__main__":
     main()
