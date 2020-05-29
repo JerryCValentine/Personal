@@ -600,7 +600,7 @@ def convolve(_image, _kernel, _mode=0): # 0 - color, 1 - sobel, 2 - sobelIncludi
                         intensity += _kernel[x + int(len(_kernel)/2+.5)-1][y + int((len(_kernel[0])/2)+.5)-1] * 0
                     pixelAverageScale += abs(_kernel[x + int(len(_kernel)/2+.5)-1][y + int((len(_kernel[0])/2)+.5)-1])
 
-        if(_mode is 0):
+        if(_mode is 0): 
             newPixelImage[posX, posY] = (int(abs(red) / pixelAverageScale), int(abs(green) / pixelAverageScale), int(abs(blue) / pixelAverageScale))
         elif(_mode is 1):
             newPixelImage[posX, posY] = scunchDict[int(intensity / pixelAverageScale)]
